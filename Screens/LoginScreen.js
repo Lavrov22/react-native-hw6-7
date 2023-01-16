@@ -1,5 +1,4 @@
-import { useEffect, useCallback, useState} from 'react';
-import { StatusBar } from 'expo-status-bar';
+import { useState} from 'react';
 import {
   StyleSheet,
   Text,
@@ -11,8 +10,7 @@ import {
   Keyboard,
   TouchableWithoutFeedback
 } from 'react-native';
-import { useFonts } from 'expo-font';
-import * as SplashScreen from 'expo-splash-screen';
+
 
 
 const initialState = {
@@ -21,34 +19,12 @@ const initialState = {
 }
 
 
-export default function LoginScreen() {
+export default function LoginScreen({ navigation }) {
   const [isActiveEmail, setIsActiveEmail] = useState(false);
   const [isActivePassword, setIsActivePassword] = useState(false);
   const [showPassword, setShowPassword] = useState(true);
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
   const [formData, setFormData] = useState(initialState);
-
-  const [fontsLoaded] = useFonts({
-     'Roboto-Regular': require('./fonts/Roboto/Roboto-Regular.ttf'),
-     'Roboto-Medium': require('./fonts/Roboto/Roboto-Medium.ttf'),
-   });
-  
-  useEffect(() => {
-    async function prepare() {
-      await SplashScreen.preventAutoHideAsync();
-    }
-    prepare();
-  }, [])
-
-  const onLayoutRootView = useCallback(async () => {
-    if (fontsLoaded) {
-      await SplashScreen.hideAsync();
-    }
-  }, [fontsLoaded]);
-
-   if (!fontsLoaded) {
-    return null;
-   }
 
   const keyboardHide = () => {
     setIsShowKeyboard(true);
@@ -66,16 +42,16 @@ export default function LoginScreen() {
 
   return (
     <TouchableWithoutFeedback onPress={keyboardHide}>
-      <View style={styles.container} onLayout={onLayoutRootView}>
+      <View style={styles.container}>
         <ImageBackground
-          source={require("./img/BG.jpg")}
+          source={require("../img/BG.jpg")}
           style={styles.image}
         >
           <View style={styles.form}>
             <View style={styles.img}>
               <TouchableOpacity activeOpacity={0.7}>
                 <Image
-                  source={require('./img/addPhoto.png')}
+                  source={require('../img/addPhoto.png')}
                   style={styles.imgAddPhoto}
                 >
                 </Image>
@@ -94,7 +70,7 @@ export default function LoginScreen() {
               marginBottom={16}
               onFocus={() => setIsActiveEmail(true)}
               onBlur={() => setIsActiveEmail(false)}
-              onChangeText={(value) => setFormData((prevState) => ({...prevState, email: value}))}
+              onChangeText={(value) => setFormData((prevState) => ({ ...prevState, email: value }))}
             />
             <View style={styles.inputContainer}>
               <TextInput
@@ -110,7 +86,7 @@ export default function LoginScreen() {
                 marginBottom={43}
                 onFocus={() => setIsActivePassword(true)}
                 onBlur={() => setIsActivePassword(false)}
-                onChangeText={(value) => setFormData((prevState) => ({...prevState, password: value}))}
+                onChangeText={(value) => setFormData((prevState) => ({ ...prevState, password: value }))}
               />
               <TouchableOpacity
                 style={styles.buttonPassword}
@@ -135,7 +111,7 @@ export default function LoginScreen() {
             <TouchableOpacity
               style={styles.button}
               activeOpacity={0.7}
-            // onPress={onPress}
+              onPress={() => { navigation.navigate("Registration") }}
             >
               <Text style={styles.buttonText}>
                 Нет аккаунта? Зарегистрироваться
@@ -206,11 +182,9 @@ const styles = StyleSheet.create({
   },
   input: {
     borderWidth: 1,
-    
     borderRadius: 8,
     height: 50,
     paddingLeft: 16,
-    
     fontFamily: "Roboto-Regular",
     color: "#212121",
     fontSize: 16,
