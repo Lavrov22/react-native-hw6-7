@@ -5,7 +5,6 @@ import { Ionicons } from '@expo/vector-icons';
 
 
 export default function PostsScreen({ route, navigation }) {
-    console.log(route)
     const [posts, setPosts] = useState([]);
 
     useEffect(() => {

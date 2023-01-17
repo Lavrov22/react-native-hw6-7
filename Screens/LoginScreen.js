@@ -10,6 +10,8 @@ import {
   Keyboard,
   TouchableWithoutFeedback
 } from 'react-native';
+import { useDispatch } from "react-redux";
+import { authSignInUser } from "../redux/auth/authOperation";
 
 
 
@@ -25,17 +27,19 @@ export default function LoginScreen({ navigation }) {
   const [showPassword, setShowPassword] = useState(true);
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
   const [formData, setFormData] = useState(initialState);
+  const dispatch = useDispatch();
 
   const keyboardHide = () => {
     setIsShowKeyboard(true);
     Keyboard.dismiss();
   };
 
-  const handleRegistration = () => {
+  const handleLogin = () => {
     setIsShowKeyboard(true);
     Keyboard.dismiss();
     console.log(formData);
-    setFormData(initialState);
+    dispatch(authSignInUser(formData));
+    // setFormData(initialState);
   }
   
   
@@ -102,10 +106,10 @@ export default function LoginScreen({ navigation }) {
             <TouchableOpacity
               style={styles.buttonPrimary}
               activeOpacity={0.7}
-              onPress={handleRegistration}
+              onPress={handleLogin}
             >
               <Text style={styles.buttonPrimaryText}>
-                Зарегистрироваться
+                Войти
               </Text>
             </TouchableOpacity>
             <TouchableOpacity

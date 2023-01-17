@@ -4,7 +4,6 @@ import { Ionicons } from '@expo/vector-icons';
 
 import LoginScreen from "./Screens/LoginScreen";
 import RegistrationScreen from "./Screens/RegistrationScreen";
-// import PostsScreen from "./Screens/PostsScreen";
 import CreatePostsScreen from "./Screens/CreatePostsScreen";
 import ProfileScreen from "./Screens/ProfileScreen";
 import Home from "./Screens/Home";
@@ -18,8 +17,8 @@ export default function useRoute(isAuth) {
   if (!isAuth) {
     return (
       <AuthStack.Navigator initialRouteName="Login" screenOptions={{ headerShown: false }} >
-        <AuthStack.Screen name="Registration" component={() => <RegistrationScreen isAuth={isAuth}/>} />
-        <AuthStack.Screen name="Login" component={() => <LoginScreen isAuth={isAuth}/>}/>
+        <AuthStack.Screen name="Registration" component={RegistrationScreen} />
+        <AuthStack.Screen name="Login" component={LoginScreen}/>
       </AuthStack.Navigator>
     )
   }
@@ -43,28 +42,20 @@ export default function useRoute(isAuth) {
       }} >
       <MainTab.Screen
         options={{
-          tabBarIcon: ({ focused, color, size }) => (
+          tabBarIcon: () => (
             <Ionicons name="grid-outline" size={24} color="rgba(33, 33, 33, 0.8)" />
           ),
           tabBarShowLabel: false,
-          headerRight: () => (
-            <Ionicons
-              name="log-in-outline"
-              size={30}
-              color="#BDBDBD"
-              style={{ marginRight: 10 }}
-            />
-          ),
+         
           headerStyle: {
             borderBottomWidth: 1,
           },
           headerShown: false,
         }}
-      
         name="Home"
         component={Home} />
       <MainTab.Screen options={{
-        tabBarIcon: ({ focused, color, size }) => (
+        tabBarIcon: () => (
           <Ionicons name="add-circle-outline" size={30} color="#FF6C00" />
         ),
         tabBarShowLabel: false,
@@ -83,7 +74,7 @@ export default function useRoute(isAuth) {
         name="CreatePostsScreen"
         component={CreatePostsScreen} />
       <MainTab.Screen options={{
-        tabBarIcon: ({ focused, color, size }) => (
+        tabBarIcon: () => (
           <Ionicons name="person-outline" size={24} color="rgba(33, 33, 33, 0.8)" />
         ),
         tabBarShowLabel: false,

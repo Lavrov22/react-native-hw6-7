@@ -1,5 +1,4 @@
 import { useEffect, useCallback, useState } from 'react';
-
 import {
   StyleSheet,
   Text,
@@ -11,7 +10,9 @@ import {
   Keyboard,
   TouchableWithoutFeedback
 } from 'react-native';
+import { useDispatch } from "react-redux";
 
+import { authSignUpUser } from "../redux/auth/authOperation";
 
 
 const initialState = {
@@ -21,13 +22,14 @@ const initialState = {
 }
 
 
-export default function RegistrationScreen({navigation, isAuth}) {
+export default function RegistrationScreen({navigation}) {
   const [isActiveLogin, setIsActiveLogin] = useState(false);
   const [isActiveEmail, setIsActiveEmail] = useState(false);
   const [isActivePassword, setIsActivePassword] = useState(false);
   const [showPassword, setShowPassword] = useState(true);
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
   const [formData, setFormData] = useState(initialState);
+  const dispatch = useDispatch();
 
 
 
@@ -40,8 +42,9 @@ export default function RegistrationScreen({navigation, isAuth}) {
     setIsShowKeyboard(true);
     Keyboard.dismiss();
     console.log(formData);
+    dispatch(authSignUpUser(formData));
     setFormData(initialState);
-    isAuth = true;
+
   }
   
   

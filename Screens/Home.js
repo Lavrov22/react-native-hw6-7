@@ -1,7 +1,9 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { Ionicons } from '@expo/vector-icons'; 
 import PostsScreen from "./PostsScreen";
 import MapScreen from "./MapScreen"
 import CommentsScreen from "./CommentsScreen"
+
 
 const NestedScreen = createNativeStackNavigator();
 
@@ -23,22 +25,31 @@ export default function Home() {
         
                 }
             }
-}>
+            }>
             <NestedScreen.Screen
                 options={{
-                     headerTitle: "Публикации",
+                    headerTitle: "Публикации",
+                    headerRight: () => (
+                        <Ionicons
+                            name="log-in-outline"
+                            size={30}
+                            color="#BDBDBD"
+                            style={{ marginRight: 10 }}
+                        />
+                    ),
                 }}
                 name="PostsScreen"
                 component={PostsScreen}
             />
             <NestedScreen.Screen
-                 options={{
-                     headerTitle: "Комментарии",
+                options={{
+                    headerTitle: "Комментарии",
+                   
                 }}
                 name="Comments" component={CommentsScreen} />
             <NestedScreen.Screen
-                 options={{
-                     headerTitle: "Карта",
+                options={{
+                    headerTitle: "Карта",
                 }}
                 name="MapScreen" component={MapScreen} />
         </NestedScreen.Navigator>
