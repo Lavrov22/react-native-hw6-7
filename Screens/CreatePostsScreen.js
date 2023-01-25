@@ -3,6 +3,12 @@ import { Text, View, StyleSheet, TextInput, TouchableOpacity, Image } from "reac
 import { Ionicons } from '@expo/vector-icons';
 import { Camera } from 'expo-camera';
 import * as Location from "expo-location";
+import { uploadBytes, ref, getDownloadURL } from "firebase/storage";
+import { collection, addDoc } from "firebase/firestore";
+import { useSelector } from "react-redux";
+
+
+import { storage, db } from "../FirebaseSDK/config";
 
 
 export default function CreatePostsScreen({navigation}) {
@@ -10,13 +16,35 @@ export default function CreatePostsScreen({navigation}) {
     const [photo, setPhoto] = useState('');
     const [location, setLocation] = useState(null);
     const [errorMsg, setErrorMsg] = useState(null);
+    const [name, setName] = useState('');
+    const [locationName, setLocationName] = useState('');
 
+    const {userId, login} = useSelector(state => state.auth)
+  
     const takePhoto = async () => {
         const photos = await camera.takePictureAsync();
         setPhoto(photos.uri);
     }
     const sendPhoto = () => {
-       navigation.navigate("PostsScreen", {photo}, {title})
+        uploadPostToServer();
+        navigation.navigate("PostsScreen", { photo });
+        
+    }
+    const uploadPostToServer = async () => {
+        const photo = await uploadPhotoToServer();
+        const createPost = await addDoc(collection(db, "posts"), {
+            photo, name, locationName, location: location.coords, userId, login
+        })
+    }
+
+    const uploadPhotoToServer = async () => {
+        const response = await fetch(photo);
+        const file = await response.blob();
+        const uniquePostId = Date.now().toString();
+        const storageRef = ref(storage, `postImage/${uniquePostId}`);
+        await uploadBytes(storageRef, file)
+        const downloadPhoto = await getDownloadURL(storageRef);
+        return downloadPhoto;
     }
 
     useEffect(() => {
@@ -61,6 +89,7 @@ export default function CreatePostsScreen({navigation}) {
                 placeholder="Название..."
                 placeholderTextColor="#BDBDBD"
                 marginTop={32}
+                onChangeText={setName}
             />
             <View style={styles.inputWrapper}>
                 <TextInput
@@ -68,6 +97,7 @@ export default function CreatePostsScreen({navigation}) {
                     placeholder="Местность..."
                     placeholderTextColor="#BDBDBD"
                     paddingLeft={28}
+                    onChangeText={setLocationName}
                 />
                 <Ionicons name="location-outline" size={24} color="#BDBDBD" style={styles.inputIcon} />
             </View>

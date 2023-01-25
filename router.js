@@ -2,8 +2,8 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons } from '@expo/vector-icons'; 
 
-import LoginScreen from "./Screens/LoginScreen";
-import RegistrationScreen from "./Screens/RegistrationScreen";
+import LoginScreen from "./Screens/Auth/LoginScreen";
+import RegistrationScreen from "./Screens/Auth/RegistrationScreen";
 import CreatePostsScreen from "./Screens/CreatePostsScreen";
 import ProfileScreen from "./Screens/ProfileScreen";
 import Home from "./Screens/Home";

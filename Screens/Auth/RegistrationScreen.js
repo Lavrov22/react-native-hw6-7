@@ -1,4 +1,4 @@
-import { useState} from 'react';
+import { useEffect, useCallback, useState } from 'react';
 import {
   StyleSheet,
   Text,
@@ -11,17 +11,19 @@ import {
   TouchableWithoutFeedback
 } from 'react-native';
 import { useDispatch } from "react-redux";
-import { authSignInUser } from "../redux/auth/authOperation";
 
+import { authSignUpUser } from "../../redux/auth/authOperation";
 
 
 const initialState = {
+  login: "",
   email: "",
   password: "",
 }
 
 
-export default function LoginScreen({ navigation }) {
+export default function RegistrationScreen({navigation}) {
+  const [isActiveLogin, setIsActiveLogin] = useState(false);
   const [isActiveEmail, setIsActiveEmail] = useState(false);
   const [isActivePassword, setIsActivePassword] = useState(false);
   const [showPassword, setShowPassword] = useState(true);
@@ -29,17 +31,19 @@ export default function LoginScreen({ navigation }) {
   const [formData, setFormData] = useState(initialState);
   const dispatch = useDispatch();
 
+
+
   const keyboardHide = () => {
     setIsShowKeyboard(true);
     Keyboard.dismiss();
   };
 
-  const handleLogin = () => {
+  const handleRegistration = () => {
     setIsShowKeyboard(true);
     Keyboard.dismiss();
-    console.log(formData);
-    dispatch(authSignInUser(formData));
+    dispatch(authSignUpUser(formData));
     // setFormData(initialState);
+
   }
   
   
@@ -48,20 +52,34 @@ export default function LoginScreen({ navigation }) {
     <TouchableWithoutFeedback onPress={keyboardHide}>
       <View style={styles.container}>
         <ImageBackground
-          source={require("../img/BG.jpg")}
+          source={require("../../img/BG.jpg")}
           style={styles.image}
         >
           <View style={styles.form}>
             <View style={styles.img}>
               <TouchableOpacity activeOpacity={0.7}>
                 <Image
-                  source={require('../img/addPhoto.png')}
+                  source={require('../../img/addPhoto.png')}
                   style={styles.imgAddPhoto}
                 >
                 </Image>
               </TouchableOpacity>
             </View>
-            <Text style={styles.textInput}>Войти</Text>
+            <Text style={styles.textInput}>Регистрация</Text>
+            <TextInput
+              style={{
+                ...styles.input,
+                borderColor: isActiveLogin ? "#FF6C00" : "#E8E8E8",
+                backgroundColor: isActiveLogin ? "#FFFFFF" : "#F6F6F6"
+              }}
+              placeholder="Логин"
+              placeholderTextColor="#BDBDBD"
+              value={formData.login}
+              marginBottom={16}
+              onFocus={() => setIsActiveLogin(true)}
+              onBlur={() => setIsActiveLogin(false)}
+              onChangeText={(value) => setFormData((prevState) => ({ ...prevState, login: value }))}
+            />
             <TextInput
               style={{
                 ...styles.input,
@@ -106,24 +124,24 @@ export default function LoginScreen({ navigation }) {
             <TouchableOpacity
               style={styles.buttonPrimary}
               activeOpacity={0.7}
-              onPress={handleLogin}
+              onPress={handleRegistration}
             >
               <Text style={styles.buttonPrimaryText}>
-                Войти
+                Зарегистрироваться
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.button}
               activeOpacity={0.7}
-              onPress={() => { navigation.navigate("Registration") }}
+              onPress={() => { navigation.navigate("Login") }}
             >
               <Text style={styles.buttonText}>
-                Нет аккаунта? Зарегистрироваться
+                Уже есть аккаунт? Войти
               </Text>
             </TouchableOpacity>
           </View>
         </ImageBackground>
-      </View>
+     </View>
     </TouchableWithoutFeedback>
   );
 };
@@ -140,7 +158,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
   },
   form: {
-    flex:0.6,
+    flex:0.7,
     height: 516,
     borderTopLeftRadius: 25,
     borderTopRightRadius: 25,
@@ -186,9 +204,11 @@ const styles = StyleSheet.create({
   },
   input: {
     borderWidth: 1,
+    
     borderRadius: 8,
     height: 50,
     paddingLeft: 16,
+    
     fontFamily: "Roboto-Regular",
     color: "#212121",
     fontSize: 16,

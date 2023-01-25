@@ -1,18 +1,27 @@
 import React, {useState, useEffect} from "react";
 import { Text, View, StyleSheet, Image, FlatList, TouchableOpacity } from "react-native";
 import { Ionicons } from '@expo/vector-icons'; 
+import { collection, onSnapshot } from "firebase/firestore"; 
+import { db } from "../FirebaseSDK/config";
+
 
 
 
 export default function PostsScreen({ route, navigation }) {
     const [posts, setPosts] = useState([]);
 
+
+    const getPosts = async () => {
+        await onSnapshot(collection(db, "posts"), (snapshots) => {
+             setPosts(snapshots.docs.map(doc => ({...doc.data(), id: doc.id})));;
+        });    
+    }
+
+
+
     useEffect(() => {
-        if (route.params) {
-            setPosts((precState) =>[...precState, route.params ])
-        }
-        
-    }, [route.params])
+        getPosts();
+    }, [])
 
     return (
 

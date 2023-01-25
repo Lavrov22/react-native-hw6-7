@@ -1,8 +1,16 @@
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from "firebase/auth";
+import {
+    createUserWithEmailAndPassword,
+    signInWithEmailAndPassword,
+    updateProfile,
+    onAuthStateChanged,
+    signOut
+} from "firebase/auth";
 import { auth } from "../../FirebaseSDK/config"
 import { authSlice } from "./authReducer";
 
-export const authSignUpUser = ({ login, email, password }) => async (dispatch, getState) => {
+const {updateUser, isLoggedIn,  logOut} = authSlice.actions;
+
+export const authSignUpUser = ({ login, email, password }) => async (dispatch) => {
 
     try {
         await createUserWithEmailAndPassword(auth, email, password);
@@ -13,11 +21,12 @@ export const authSignUpUser = ({ login, email, password }) => async (dispatch, g
         
         const {uid, displayName} = await auth.currentUser;
 
-        dispatch(authSlice.actions.updateUser({
+        const userUpdateProfile = {
+            login: displayName,
             userId: uid,
-            login: displayName
-        }))
-       
+        };
+        dispatch(updateUser(userUpdateProfile))
+
     } catch (error) {
         console.log("error", error)
         console.log("error.message", error.message)
@@ -28,15 +37,30 @@ export const authSignUpUser = ({ login, email, password }) => async (dispatch, g
 export const authSignInUser = ({ email, password }) => async () => {
     try {
         const user = await signInWithEmailAndPassword(auth, email, password);
-        console.log("user", user)
     } catch (error) {
         console.log("error", error)
         console.log("error.message", error.message)
     }
 }
 
-export const authSignOutUser = () => async (dispatch, getState) => {
-
+export const authSignOutUser = () => async (dispatch) => {
+    await signOut(auth);
+    dispatch(logOut())
 }
 
+export const authIsLoggedIn = () => async (dispatch) => {
+    await onAuthStateChanged(auth, (user) => {
+      
+        if (user) {
+            const userUpdateProfile = {
+                login: user.displayName,
+                userId: user.uid,
+            };
+
+            dispatch(isLoggedIn({isLoggedIn: true}));
+            dispatch(updateUser(userUpdateProfile));
+        }
+    })
+
+}
 
